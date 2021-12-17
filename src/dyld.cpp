@@ -4743,7 +4743,7 @@ _main(const macho_header* mainExecutableMH, uintptr_t mainExecutableSlide,
 		uintptr_t* startGlue)
 {
 	uintptr_t result = 0;
-	sMainExecutableMachHeader = mainExecutableMH;
+	sMainExecutableMachHeader = mainExecutableMH; //主程序MarchO的头
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
 	// if this is host dyld, check to see if iOS simulator is being run
 	const char* rootPath = _simple_getenv(envp, "DYLD_ROOT_PATH");

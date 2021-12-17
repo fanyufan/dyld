@@ -210,11 +210,11 @@ uintptr_t start(const struct macho_header* appsMachHeader, int argc, const char*
 	// if kernel had to slide dyld, we need to fix up load sensitive locations
 	// we have to do this before using any global variables
 	if ( slide != 0 ) {
-		rebaseDyld(dyldsMachHeader, slide);
+		rebaseDyld(dyldsMachHeader, slide); //2. rebase dyld
 	}
 
 	// allow dyld to use mach messaging
-	mach_init();
+	mach_init(); //3. 消息初始化
 
 	// kernel sets up env pointer to be just past end of agv array
 	const char** envp = &argv[argc+1];
@@ -225,7 +225,7 @@ uintptr_t start(const struct macho_header* appsMachHeader, int argc, const char*
 	++apple;
 
 	// set up random value for stack canary
-	__guard_setup(apple);
+	__guard_setup(apple); //4. 栈溢出保护
 
 #if DYLD_INITIALIZER_SUPPORT
 	// run all C++ initializers inside dyld
@@ -234,6 +234,7 @@ uintptr_t start(const struct macho_header* appsMachHeader, int argc, const char*
 
 	// now that we are done bootstrapping dyld, call dyld's main
 	uintptr_t appsSlide = slideOfMainExecutable(appsMachHeader);
+	//5. 调用main函数
 	return dyld::_main(appsMachHeader, appsSlide, argc, argv, envp, apple, startGlue);
 }
 
